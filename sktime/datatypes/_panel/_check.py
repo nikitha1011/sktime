@@ -1061,32 +1061,60 @@ class PanelDask(ScitypePanel):
 class PanelPolarsEager(ScitypePanel):
     """Data type: polars.DataFrame based specification of panel of time series.
 
+    Name: ``"polars_panel"``
+
+    Short description:
+    A ``polars.DataFrame`` representing a panel of time series, with explicit
+    index columns and one or more columns for observed variables.
+
+    Long description:
+    The ``"polars_panel"`` :term:`mtype` is a concrete specification of the
+    ``Panel`` :term:`scitype`, representing a collection of time series.
+
+    An object ``obj: polars.DataFrame`` follows the specification iff:
+
+    * data container: ``obj`` must be a ``polars.DataFrame``.
+    * index columns: exactly two columns must have names starting with
+      ``"__index__"``. The first identifies instances and the second represents
+      time points.
+    * index ordering: time points must be sorted in monotonically increasing
+      order within each instance.
+    * variables: columns other than the index columns represent the variables
+      observed for each instance and time point.
+    * variable names: variable names are taken from ``obj.columns``, excluding
+      the index columns.
+    * missing values: missing values are permitted.
+
+    Capabilities:
+    * can represent multivariate time series.
+    * can represent unequally spaced time series.
+    * can represent missing values.
+
     Parameters
     ----------
     is_univariate: bool
-        True iff table has one variable
-    is_equally_spaced : bool
+        True iff the table has one variable
+    is_equally_spaced: bool
         True iff series index is equally spaced
     is_equal_length: bool
-        True iff all series in panel are of equal length
+        True iff all series in the panel have equal length
     is_empty: bool
-        True iff table has no variables or no instances
+        True iff the table has no variables or no instances
     is_one_series: bool
-        True iff there is only one series in the panel of time series
+        True iff there is only one series in the panel
     has_nans: bool
         True iff the table contains NaN values
     n_instances: int
-        number of instances in the panel of time series
+        Number of instances in the panel
     n_features: int
-        number of variables in table
+        Number of variables in the table
     feature_names: list of int or object
-        names of variables in table
+        Names of variables in the table
     dtypekind_dfip: list of DtypeKind enum
-        list of DtypeKind enum values for each feature in the panel,
-        following the data frame interface protocol
+        DtypeKind enum values for each feature, following the data frame
+        interface protocol
     feature_kind: list of str
-        list of feature kind strings for each feature in the panel,
-        coerced to FLOAT or CATEGORICAL type
+        Feature kind strings for each feature, coerced to FLOAT or CATEGORICAL
     """
 
     _tags = {
